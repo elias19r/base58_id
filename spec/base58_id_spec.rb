@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'base58_id'
 
 RSpec.describe Base58Id do
-  it 'converts an Integer ID or a UUID String to/from Base58 String' do
+  it 'converts Integer ID or UUID String to/from Base58 String' do
     base58 = generate_base58
 
     expect(
@@ -362,6 +362,108 @@ RSpec.describe Base58Id do
         expect(described_class.valid_uuid?(value.upcase.delete('-'))).to be(true)
         expect(described_class.valid_uuid?("0x#{value.upcase.delete('-')}")).to be(true)
         expect(described_class.valid_uuid?("0X#{value.upcase.delete('-')}")).to be(true)
+      end
+    end
+  end
+
+  describe '.random_number' do
+    context 'when max_or_range is not set or nil' do
+      it 'generates a random Base58 String using the default range' do
+        expected_default_random_range = 0..((2**63) - 1)
+
+        allow(SecureRandom).to receive(:random_number).with(expected_default_random_range).and_return(1000)
+
+        expect(described_class.random_number).to eq('TQ')
+        expect(described_class.random_number(nil)).to eq('TQ')
+
+        expect(SecureRandom).to have_received(:random_number).with(expected_default_random_range).twice
+      end
+    end
+
+    context 'when max_or_range is set and not nil' do
+      it 'generates a random Base58 String using the given range' do
+        max_or_range = 100
+
+        allow(SecureRandom).to receive(:random_number).and_return(99)
+
+        expect(described_class.random_number(max_or_range)).to eq('Bs')
+
+        expect(SecureRandom).to have_received(:random_number).with(max_or_range).once
+      end
+    end
+  end
+
+  describe '.rand as an alias to random_number' do
+    context 'when max_or_range is not set or nil' do
+      it 'generates a random Base58 String using the default range' do
+        expected_default_random_range = 0..((2**63) - 1)
+
+        allow(SecureRandom).to receive(:random_number).with(expected_default_random_range).and_return(1000)
+
+        expect(described_class.rand).to eq('TQ')
+        expect(described_class.rand(nil)).to eq('TQ')
+
+        expect(SecureRandom).to have_received(:random_number).with(expected_default_random_range).twice
+      end
+    end
+
+    context 'when max_or_range is set and not nil' do
+      it 'generates a random Base58 String using the given range' do
+        max_or_range = 100
+
+        allow(SecureRandom).to receive(:random_number).and_return(99)
+
+        expect(described_class.rand(max_or_range)).to eq('Bs')
+
+        expect(SecureRandom).to have_received(:random_number).with(max_or_range).once
+      end
+    end
+  end
+
+  describe '.random_digits' do
+    context 'when n is set to non-nil but not an Integer' do
+      it 'raises an ArgumentError' do
+        non_integer = Object.new
+
+        expect do
+          described_class.random_digits(non_integer)
+        end.to raise_error(ArgumentError, 'argument must be an Integer')
+      end
+    end
+
+    context 'when n is not set or nil' do
+      it 'generates a random string of 10 Base58 digits' do
+        string = described_class.random_digits
+
+        expect(string.size).to eq(10)
+        expect(string.count("^#{base58_chars.join}")).to eq(0)
+
+        string = described_class.random_digits(nil)
+
+        expect(string.size).to eq(10)
+        expect(string.count("^#{base58_chars.join}")).to eq(0)
+      end
+    end
+
+    context 'when n is zero or a negative Integer' do
+      it 'returns an empty string' do
+        string = described_class.random_digits(0)
+
+        expect(string).to eq('')
+
+        string = described_class.random_digits(generate_negative_integer)
+
+        expect(string).to eq('')
+      end
+    end
+
+    context 'when n is a positive Integer' do
+      it 'generates a random string of n Base58 digits' do
+        n = SecureRandom.random_number(1..256)
+        string = described_class.random_digits(n)
+
+        expect(string.size).to eq(n)
+        expect(string.count("^#{base58_chars.join}")).to eq(0)
       end
     end
   end

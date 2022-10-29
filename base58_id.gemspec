@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name     = 'base58_id'
   s.version  = Base58Id::VERSION
   s.license  = 'MIT'
-  s.summary  = 'Convert an Integer ID or a UUID String to/from Base58 String'
+  s.summary  = 'Convert Integer ID or UUID String to/from Base58 String; Generate random Base58 String'
   s.homepage = 'https://github.com/elias19r/base58_id'
   s.author   = 'Elias Rodrigues'
 

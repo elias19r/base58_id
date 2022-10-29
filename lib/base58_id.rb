@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 class Base58Id
   # Based on Base64 URL-safe alphabet but with I, O, l, 0, -, _ removed.
   ALPHABET_58 = %w[
@@ -14,6 +16,9 @@ class Base58Id
 
   UUID_PATTERN = /\A(0x)?[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}\z/i.freeze
   UUID_BYTES_FORMAT = '%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x'
+
+  DEFAULT_RANDOM_RANGE = (0..((2**63) - 1)).freeze
+  DEFAULT_RANDOM_DIGITS = 10
 
   def self.integer_to_base58(integer)
     raise ArgumentError, 'argument must be an Integer' unless integer.is_a?(Integer)
@@ -69,5 +74,23 @@ class Base58Id
     raise ArgumentError, 'argument must be a String' unless value.is_a?(String)
 
     value.match?(UUID_PATTERN)
+  end
+
+  def self.random_number(max_or_range = nil)
+    max_or_range = DEFAULT_RANDOM_RANGE if max_or_range.nil?
+
+    integer_to_base58(SecureRandom.random_number(max_or_range))
+  end
+
+  def self.rand(*args)
+    random_number(*args)
+  end
+
+  def self.random_digits(n = nil)
+    n = DEFAULT_RANDOM_DIGITS if n.nil?
+
+    raise ArgumentError, 'argument must be an Integer' unless n.is_a?(Integer)
+
+    n.times.reduce('') { |str, _| str + ALPHABET_58[SecureRandom.random_number(58)] }
   end
 end

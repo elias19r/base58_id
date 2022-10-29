@@ -39,6 +39,9 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   Enabled: false
 
+Naming/MethodParameterName:
+  Enabled: false
+
 RSpec/ExampleLength:
   Enabled: false
 RSpec/MultipleExpectations:
