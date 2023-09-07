@@ -15,14 +15,14 @@ Or via `Gemfile` in your project:
 ```sh
 source 'https://rubygems.org'
 
-gem 'base58_id', '~> 1.1'
+gem 'base58_id', '~> 1.2'
 ```
 
 Or build and install the gem locally:
 
 ```sh
 gem build base58_id.gemspec
-gem install base58_id-1.1.0.gem
+gem install base58_id-1.2.0.gem
 ```
 
 Require it in your Ruby code and the `Base58Id` class will be available:

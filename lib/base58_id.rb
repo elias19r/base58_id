@@ -12,12 +12,12 @@ class Base58Id
 
   ALPHABET_58_INVERT = ALPHABET_58.each_with_index.to_h
   ALPHABET_58_CHARS = ALPHABET_58.join
-  CARET_ALPHABET_58_CHARS = "^#{ALPHABET_58_CHARS}"
+  CARET_ALPHABET_58_CHARS = "^#{ALPHABET_58_CHARS}".freeze
 
-  UUID_PATTERN = /\A(0x)?[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}\z/i.freeze
+  UUID_PATTERN = /\A(0x)?[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}\z/i
   UUID_BYTES_FORMAT = '%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x'
 
-  DEFAULT_RANDOM_RANGE = (0..((2**63) - 1)).freeze
+  DEFAULT_RANDOM_RANGE = (0..((2**63) - 1))
   DEFAULT_RANDOM_DIGITS = 10
 
   def self.integer_to_base58(integer)
